@@ -42,18 +42,18 @@ class Genius:
         return hits[0]["result"]["primary_artist"]["id"]
 
     def get_artist(self, search_term):
-        """Return the artist information for a search term."""
+        """Return JSON for the most likely artist for a search term."""
         artist_id = self._get_artist_id(search_term)
         if artist_id is None:
             return None
-        json_data = self._get(f"/artists/{artist_id}")
-        return json_data["response"]["artist"]
+        return self._get(f"/artists/{artist_id}")
 
-    @staticmethod
-    def _artist_row(search_term, artist):
-        """Build one DataFrame row from an artist dictionary."""
-        if artist is None:
+    def _artist_row(self, search_term, artist_json):
+        """Build one DataFrame row from an artist's JSON."""
+        if artist_json is None:
             artist = {}
+        else:
+            artist = artist_json["response"]["artist"]
         return {
             "search_term": search_term,
             "artist_name": artist.get("name"),
