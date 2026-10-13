@@ -1,8 +1,12 @@
 # your code here ...
 
+import os
+
 import requests
 import pandas as pd
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class Genius:
     """retrieving artist information from the Genius API."""
@@ -33,19 +37,15 @@ class Genius:
     def _get_artist_id(self, search_term):
         """Return the primary artist ID from the first hit, or None."""
         hits = self.search(search_term, per_page=1)
-
         if not hits:
             return None
-
         return hits[0]["result"]["primary_artist"]["id"]
 
     def get_artist(self, search_term):
         """Return the artist information for a search term."""
         artist_id = self._get_artist_id(search_term)
-
         if artist_id is None:
             return None
-
         json_data = self._get(f"/artists/{artist_id}")
         return json_data["response"]["artist"]
 
@@ -54,7 +54,6 @@ class Genius:
         """Build one DataFrame row from an artist dictionary."""
         if artist is None:
             artist = {}
-
         return {
             "search_term": search_term,
             "artist_name": artist.get("name"),
